@@ -1,4 +1,4 @@
-# 刷题小本子
+# LeetCode notebook
 
-> An awesome project.
+> 刷题小本子
 
