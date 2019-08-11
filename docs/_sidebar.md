@@ -1,6 +1,15 @@
 * [首页](/)
-* [Data Structure]()
-  * [Heap](DataStructure/Heap)
+
 * [LeetCode Problems]()
+
   * [Problems for later](Problems/forlater)
+
+* [Data Structure](DataStructure/README)
+  
+  * [Heap](DataStructure/Heap)
+  * [BST](DataStructure/BST)
+  
+* [Time Efficiency](TimeComplexity)
+  
+  
 
