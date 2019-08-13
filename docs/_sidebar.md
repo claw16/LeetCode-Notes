@@ -11,5 +11,7 @@
   
 * [Time Efficiency](TimeComplexity)
   
+* [Python Tricks](Python/PythonTricks)
+  
   
 
