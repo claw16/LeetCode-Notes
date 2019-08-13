@@ -1,6 +1,6 @@
 # LintCode Problems
 
-### 415 有效回文串
+### 415. 有效回文串
 
 [题目描述](https://www.lintcode.com/problem/valid-palindrome/description)
 
@@ -66,4 +66,35 @@ class Solution:
             elif num > 1 and num % 2 != 0: ans += num-1
         return ans + 1 if len(s) > ans else ans
 ```
+
+
+
+### 13.字符串查找
+
+[题目描述](https://www.lintcode.com/problem/implement-strstr/description)
+
+##### 题解 1
+
+* 边界条件：如果source==target，直接返回0
+* 遍历source，在每个位置比较与target长度相等的子串跟target是否相同，如果是，直接返回当前位置index；如果否，继续遍历，最终返回False。
+
+```python
+class Solution:
+    def strStr(self, source, target):
+        # Write your code here
+        #ans = -1
+        if source == target: return 0
+        n_target = len(target)
+        for i in range(len(source)):
+            if source[i:i+n_target] == target: return i
+        return -1
+```
+
+
+
+##### 题解 2
+
+[九章解法](https://www.jiuzhang.com/solution/implement-strstr/#tag-highlight-lang-python)
+
+
 
