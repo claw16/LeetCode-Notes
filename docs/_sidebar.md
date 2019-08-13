@@ -4,6 +4,10 @@
 
   * [Problems for later](Problems/forlater)
 
+* [LintCode Problems](Problems/LintCode)
+
+  
+
 * [Data Structure](DataStructure/README)
   
   * [Heap](DataStructure/Heap)
