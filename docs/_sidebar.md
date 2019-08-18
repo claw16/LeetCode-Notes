@@ -6,12 +6,10 @@
 
 * [LintCode Problems](Problems/LintCode)
 
-  
-
 * [Data Structure](DataStructure/README)
   
   * [Heap](DataStructure/Heap)
-  * [BST](DataStructure/BST)
+  * [Binary Tree](DataStructure/BT)
   
 * [Time Efficiency](TimeComplexity)
   
