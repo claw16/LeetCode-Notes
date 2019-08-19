@@ -485,6 +485,8 @@ class Solution:
 
 ### 228. 链表的中点
 
+[题目描述](https://www.lintcode.com/problem/window-sum/description)
+
 ##### 思路：
 
 利用快慢指针。每次，慢一步，快两步。当快到达末尾时，慢刚好是中间点，返回慢指针。
@@ -507,5 +509,38 @@ class Solution:
             slow = slow.next
             fast = fast.next.next
         return slow
+```
+
+
+
+
+
+### 585. 山脉序列中的最大值
+
+[题目描述](https://www.lintcode.com/problem/maximum-number-in-mountain-sequence/description)
+
+##### 思路:
+
+- Define two pointers, `start` and `end`.
+- While `start`is not to the next of `end`, define `mid`. Compare `mid` with its previous element, if `mid - 1 ` is greater, meaning the peak must be to the left of mid, move `end` to `mid`; otherwise move `start` to `mid`.
+- The final state will be that `start` is to the next of `end`, and one of them is the peak. Return the larger one.
+
+```python
+class Solution:
+    """
+    @param nums: a mountain sequence which increase firstly and then decrease
+    @return: then mountain top
+    """
+    def mountainSequence(self, nums):
+        # write your code here
+        start, end = 0, len(nums) - 1
+        
+        while start + 1 < end:
+            mid = (start + end) // 2
+            if nums[mid - 1] > nums[mid]:
+                end = mid
+            else:
+                start = mid
+        return max(nums[start], nums[end])
 ```
 
