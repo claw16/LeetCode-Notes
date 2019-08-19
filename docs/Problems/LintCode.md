@@ -69,6 +69,40 @@ class Solution:
 
 
 
+### 891. 有效回文 II
+
+[题目描述](https://www.lintcode.com/problem/valid-palindrome-ii/description)
+
+##### 题解思路：
+
+应用双向双指针，逐字符检查。第一次出现left和right指针对应的字符不一样的情况，跳过左边或者右边的一个字符，即执行一次`left += 1`或者`right -= 1`，继续检查。
+
+```python
+class Solution:
+    def validPalindrome(self, s):
+        left, right = self.two_ptr(s, 0, len(s) - 1)
+        if left >= right:
+            return True
+        # left < right --> try to delete 1 character
+        return self.is_palindrome(s, left + 1, right) or self.is_palindrome(s, left, right - 1)
+        
+    def is_palindrome(self, s, left, right):
+        left, right = self.two_ptr(s, left, right)
+        return left >= right
+        
+    def two_ptr(self, s, left, right):
+        while left < right:
+            if s[left] != s[right]:
+                return left, right
+            left += 1
+            right -= 1
+        return left, right
+```
+
+
+
+
+
 ### 13.字符串查找
 
 [题目描述](https://www.lintcode.com/problem/implement-strstr/description)
@@ -81,8 +115,6 @@ class Solution:
 ```python
 class Solution:
     def strStr(self, source, target):
-        # Write your code here
-        #ans = -1
         if source == target: return 0
         n_target = len(target)
         for i in range(len(source)):
@@ -396,5 +428,84 @@ class Solution:
 
 ```
 
+```
+
+
+
+
+
+### 521. 去除重复元素
+
+[题目描述](https://www.lintcode.com/problem/remove-duplicate-numbers-in-array/description)
+
+##### 思路：
+
+先将数组排序。利用两个指针，`i`从位置1开始遍历数组，`ans`从位置1开始，一旦发现下一个数字跟当前数字相同，`ans`保持不动，直到`i`找到一个新的数字，将新数字覆盖到`ans`的位置，`ans`右移一步。
+
+```python
+class Solution:
+    # @param {int[]} nums an array of integers
+    # @return {int} the number of unique integers
+    def deduplication(self, nums):
+        # Write your code here
+        if len(nums) == 0:
+            return 0
+        nums.sort()
+        ans = 1
+        for i in range(1, len(nums)):
+            if nums[i-1] != nums[i]:
+                nums[ans] = nums[i]
+                ans += 1
+        return ans
+```
+
+
+
+### 604. 滑动窗口内数的和
+
+[题目描述](https://www.lintcode.com/problem/window-sum/description)
+
+##### 思路：
+
+初始化数组window，把第一个k个数的和放进去，然后从位置1开始遍历，注意遍历结尾位置的定义。每到一个新位置，以前一个和的值为基准，减去出去的数字，加上进来的数字，保存为当前窗口的和，加入window数组。
+
+```python
+class Solution:
+    def winSum(self, nums, k):
+        # write your code here
+        if k == 0:
+            return nums
+        window = [sum(nums[0 : k])]
+        for i in range(1, len(nums) - k + 1):
+            window.append(window[i-1] - nums[i-1] + nums[i-1+k])
+        return window
+```
+
+
+
+### 228. 链表的中点
+
+##### 思路：
+
+利用快慢指针。每次，慢一步，快两步。当快到达末尾时，慢刚好是中间点，返回慢指针。
+
+[题目描述](https://www.lintcode.com/problem/middle-of-linked-list/description)
+
+```python
+class Solution:
+    """
+    @param head: the head of linked list.
+    @return: a middle node of the linked list
+    """
+    def middleNode(self, head):
+        # write your code here
+        if not head:
+            return None
+        slow = head
+        fast = head.next
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
 ```
 
