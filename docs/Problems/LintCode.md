@@ -544,3 +544,432 @@ class Solution:
         return max(nums[start], nums[end])
 ```
 
+
+
+### 447. 在大数组中查找
+
+[题目描述](https://www.lintcode.com/problem/search-in-a-big-sorted-array/description)
+
+##### 思路：
+
+利用倍增法的思路，因为现在不知道数组末尾的位置，我们就用一个指针从头开始，每次位置下标增大一倍，直到当前的值大于`target`，就意味着`target`的位置在当前下标位置和上一个下标位置之间。确定了范围之后用二分法查找即可。
+
+```python
+"""
+Definition of ArrayReader
+class ArrayReader(object):
+    def get(self, index):
+    	# return the number on given index, 
+        # return 2147483647 if the index is invalid.
+"""
+class Solution:
+    """
+    @param: reader: An instance of ArrayReader.
+    @param: target: An integer
+    @return: An integer which is the first index of target.
+    """
+    def searchBigSortedArray(self, reader, target):
+        # write your code here
+        
+        if reader.get(0) == target:
+            return 0
+        if reader.get(0) > target:
+            return -1
+        end = 1
+        while reader.get(end) < target:
+            end *= 2
+        start = end // 2
+        
+        while start + 1 < end:
+            mid = (start + end) // 2
+            if reader.get(mid) > target:
+                end = mid
+            if reader.get(mid) < target:
+                start = mid
+            if reader.get(mid) == target:
+                end = mid
+        if reader.get(start) == target:
+            return start
+        if reader.get(end) == target:
+            return end
+        return -1
+```
+
+
+
+### 460. Find K Closest Elements
+
+[题目描述](https://www.lintcode.com/problem/find-k-closest-elements/description)
+
+##### 思路：
+
+- Locate the first position called `left` that is greater than the `target` but less than or equal to `target` by the function `get_lower_bound`, which uses binary search.
+- Define `right` as the next right position of `left`.
+- Use `left` and `right` as two back-to-back pointers who go out in different directions. In each step, get the one that is closer to the target and append its value into the result list, then move the corresponding pointer one step further. We use a function `is_left_closer` to indicate that `left` is closer to the `target` if it returns True, `right` is closer if otherwise. Here is how the function works:
+  - If `left`is less than 0, meaning that `left` is out of bound, return False.
+  - if `right` exceeds the right bound, meaning that `right` is located at the last position of the given list, then of course `left` is closer no matter what numbers are to the left.
+  - If both pointers are in bound, compare the values and return True if `left` is closer, False if otherwise.
+
+
+
+```python
+class Solution:
+    """
+    @param A: an integer array
+    @param target: An integer
+    @param k: An integer
+    @return: an integer array
+    """
+    def kClosestNumbers(self, A, target, k):
+        # write your code here
+        left = self.get_lower_bound(A, target)
+        right = left + 1
+        ans = []
+        for _ in range(k):
+            if self.is_left_closer(A, target, left, right):
+                ans.append(A[left])
+                left -= 1
+            else:
+                ans.append(A[right])
+                right += 1
+        return ans
+        
+    def get_lower_bound(self, nums, target):
+        start, end = 0, len(nums) - 1
+        while start + 1 < end:
+            mid = (start + end) // 2
+            if nums[mid] > target:
+                end = mid
+            if nums[mid] <= target:
+                start = mid
+        if self.distance(nums, start, target) <= self.distance(nums, end, target):
+            return start
+        return end
+        
+    def distance(self, nums, index, target):
+        return abs(nums[index] - target)
+        
+    def is_left_closer(self, A, target, left, right):
+        if left < 0:
+            return False
+        if right > len(A) - 1:
+            return True
+        return self.distance(A, left, target) <= self.distance(A, right, target) 
+```
+
+
+
+### 428. Pow(x, n)
+
+[题目描述](https://www.lintcode.com/problem/powx-n/description)
+
+##### 思路：
+
+First we only consider `n >= 0`. In this case we also need to consider the cases that n is even or odd.
+
+If n is even, `pow(x, n) = pow(x*x, n/2)`. If n is odd, `pow(x, n) = pow(x, n - 1) * x`.
+
+Now we consider the case that `n < 0`. In this case, we first make `n = -n`, asume n is positive and perform the steps described above. Then return `1/result`.
+
+##### Recursion solution:
+
+```python
+class Solution:
+    """
+    @param x {float}: the base number
+    @param n {int}: the power number
+    @return {float}: the result
+    """
+    def myPow(self, x, n):
+        # write your code here
+        if n >= 0:
+            return self.helper(x, n)
+        if n < 0:
+            n = -n
+            return 1/self.helper(x, n)
+    
+    def helper(self, x, n):
+        if n == 0: # base case 0
+            return 1
+        if n == 1: # base case 1
+            return x
+        if n % 2 == 0:
+            return self.helper(x*x, n/2)
+        else:
+            return self.helper(x, n - 1) * x
+```
+
+##### Non-recursion solution:
+
+```python
+class Solution:
+    """
+    @param x {float}: the base number
+    @param n {int}: the power number
+    @return {float}: the result
+    """
+    def myPow(self, x, n):
+        # write your code here
+        if n < 0:
+            x = 1/x
+            n = - n
+            
+        ans = 1
+        temp = x
+        
+        while n != 0:
+            if n % 2 == 1:
+                ans *= temp
+            temp *= temp
+            n //= 2
+        return ans
+```
+
+
+
+### 159. Find Minimum in Rotated Sorted Array
+
+[题目描述](https://www.lintcode.com/problem/find-minimum-in-rotated-sorted-array/description)
+
+##### 思路：
+
+The original array is sorted, and its rotated version is our input array. If we put the values into an x-y axis graph, say example `4 5 6 7 0 1 2`. It looks like this:
+
+```
+			7
+		6
+	5
+4
+---------------------------
+						2
+					1
+				0
+```
+
+As can be seen from the graph, any value that is greater than `2`, the last number of the array, will be in the upper portion, which is not our interest. Any value that is less than `2` will be closer to our target. Use these two assumptions to keep shorten our searching range, until the `start` and `end` pointers are located next to each other, the smaller one of them is our answer.
+
+```python
+class Solution:
+    """
+    @param nums: a rotated sorted array
+    @return: the minimum number in the array
+    """
+    def findMin(self, nums):
+        # write your code here
+        start, end = 0, len(nums) - 1
+        
+        while start + 1 < end:
+            mid = (start + end) // 2
+            if nums[mid] > nums[end]:
+                start = mid
+            else:
+                end = mid
+        return min(nums[start], nums[end])
+```
+
+
+
+### 140. Fast Power
+
+[题目描述](https://www.lintcode.com/problem/fast-power/description)
+
+##### 思路：
+
+Similar to 428 Pow(x, n), use a faster way to calculate `a^n`, then modules `b`. Note that we can mod `b` in the middle steps to avoid overflow if `a` and `n` are very large numbers.
+
+```python
+class Solution:
+    """
+    @param a: A 32bit integer
+    @param b: A 32bit integer
+    @param n: A 32bit integer
+    @return: An integer
+    """
+    def fastPower(self, a, b, n):
+        # write your code here
+        power_a = 1
+        
+        while n != 0:
+            if n % 2 == 1:
+                power_a *= a % b
+            a *= a % b
+            n //= 2
+        return power_a % b
+```
+
+
+
+### 75. Find Peak Element
+
+[题目描述](https://www.lintcode.com/problem/find-peak-element/description)
+
+##### 思路：
+
+- As stated, the second last element is greater than the last one, as a result the last element must not be a peak; and the second element is greater than the first one, i.e. the first element is not a peak as well. Consequently we set `start = 0, end = len(A) - 2`.
+- Once we find a position that either side of it is greater, then we say we found a peak. Otherwise we go to the greater side to find. 
+- If both sides are greater, we go to any side; note that in this case we cannot shorten the range to `start = mid - 1, end = mid + 1`, since this case indicates that we found a valey, if we shorten the range like that, we shall never find a peak. We can only pick one side.
+
+```python
+class Solution:
+    """
+    @param A: An integers array.
+    @return: return any of peek positions.
+    """
+    def findPeak(self, A):
+        # write your code here
+        start, end = 1, len(A) - 2
+        
+        while start + 1 < end:
+            mid = (start + end) // 2
+            if A[mid] > A[mid + 1] and A[mid] > A[mid - 1]:
+                return mid
+            if A[mid] < A[mid + 1]:
+                start = mid + 1
+                continue
+            if A[mid] < A[mid - 1]:
+                end = mid - 1
+                continue
+        if A[start] > A[end]:
+            return start
+        return end
+```
+
+
+
+### 74. First Bad Version
+
+[题目描述](https://www.lintcode.com/problem/first-bad-version/description)
+
+思路：
+
+Use binary search. 
+
+```python
+#class SVNRepo:
+#    @classmethod
+#    def isBadVersion(cls, id)
+#        # Run unit tests to check whether verison `id` is a bad version
+#        # return true if unit tests passed else false.
+# You can use SVNRepo.isBadVersion(10) to check whether version 10 is a 
+# bad version.
+class Solution:
+    """
+    @param n: An integer
+    @return: An integer which is the first bad version.
+    """
+    def findFirstBadVersion(self, n):
+        # write your code here
+        start, end = 1, n
+        while start + 1 < end:
+            mid = (start + end) // 2
+            if SVNRepo.isBadVersion(mid):
+                end = mid
+            else:
+                start = mid
+        if SVNRepo.isBadVersion(start):
+            return start
+        return end
+```
+
+
+
+### 62. Search in Rotated Sorted Array
+
+[题目描述](https://www.lintcode.com/problem/first-bad-version/description)
+
+##### 思路1：一次二分查找
+
+If the value at `mid` position is greater than the value at `start` position, do a further comparison: is target in between `start` and `mid`, if yes, move `end` to `mid` position, then all elements within `start` and `end` are in an ascending order, continue the binary search we wil find the answer; if no, move `start` to `mid`. The same idea for the other part.
+
+```python
+class Solution:
+    """
+    @param A: an integer rotated sorted array
+    @param target: an integer to be searched
+    @return: an integer
+    """
+    def search(self, A, target):
+        # write your code here
+        if not A:
+            return -1
+        start, end = 0, len(A) - 1
+        
+        while start + 1 < end:
+            mid = (start + end) // 2
+            if A[mid] > A[start]:
+                if A[mid] >= target >= A[start]:
+                    end = mid
+                else:
+                    start = mid
+            if A[mid] < A[end]:
+                if A[mid] <= target <= A[end]:
+                    start = mid
+                else:
+                    end = mid
+            if A[mid] == target:
+                return mid
+        if A[start] == target:
+            return start
+        if A[end] == target:
+            return end
+        return -1
+```
+
+
+
+##### 思路2：两次二分查找
+
+- First check is this array rotated, if not, call the binary search function and return the value.
+- If the array is rotated, use the similar idea of question [159. Find Minimum in Rotated Sorted Array](https://www.lintcode.com/problem/find-minimum-in-rotated-sorted-array/description) to find the peak and valey location. Then perform binary search from the start to peak, and from valey to the end, to search the target.
+
+```python
+class Solution:
+    """
+    @param A: an integer rotated sorted array
+    @param target: an integer to be searched
+    @return: an integer
+    """
+    def search(self, A, target):
+        # write your code here
+        ans = -1
+        if not A:
+            return ans
+        start, end = 0, len(A) - 1
+        
+        # if the array is rotated 0 step, i.e. no ratation
+        if A[start] < A[end]:
+            return self.binary_search(A, target, start, end)
+        else:
+            while start + 1 < end:
+                mid = (start + end) // 2
+                if A[mid] > A[end]:
+                    start = mid
+                if A[mid] <= A[end]:
+                    end = mid
+            peak, valey = start, end
+            
+            search_left = self.binary_search(A, target, 0, peak)
+            search_right = self.binary_search(A, target, valey, len(A) - 1)
+            
+            if search_left != -1:
+                ans = search_left
+            if search_right != -1:
+                ans = search_right
+            return ans
+    
+    def binary_search(self, A, target, start, end):
+        while start + 1 < end:
+            mid = (start + end) // 2
+            if A[mid] == target:
+                return mid
+            if A[mid] < target:
+                start = mid
+            if A[mid] > target:
+                end = mid
+        if A[start] == target:
+            return start
+        if A[end] == target:
+            return end
+        return -1
+```
+
