@@ -383,6 +383,12 @@ class Solution:
 
 [题目描述](https://www.lintcode.com/problem/maximum-depth-of-binary-tree/description)
 
+##### 思路：
+
+If root is empty, return 0.
+
+Recursively visited left and right child node, return the height that is greater and plus 1 (1 comes from the increased height by the root).
+
 ```python
 class Solution:
     def maxDepth(self, root):
@@ -396,6 +402,10 @@ class Solution:
 ### 93. 平衡二叉树
 
 [题目描述](https://www.lintcode.com/problem/balanced-binary-tree/description)
+
+##### 思路：
+
+Use the idea of [Q97](https://www.lintcode.com/problem/maximum-depth-of-binary-tree/description), calculate the heights of left and right children, if the different is less than or equal to 1, return True; otherwise return False.
 
 ```python
 class Solution:
@@ -971,5 +981,147 @@ class Solution:
         if A[end] == target:
             return end
         return -1
+```
+
+
+
+### 900. Closest Binary Search Tree Value
+
+[题目描述](https://www.lintcode.com/problem/closest-binary-search-tree-value/description)
+
+##### 思路1：recursion
+
+Find the lower and upper bound of the target, return the closest one.
+
+How to find a lower bound:
+
+- If `target <= root.val`, it means that the lower bound must be in the left sub-tree, just return `find_lower(root.left, target)`.
+- If `target` is greater than root value, it means that current node is a lower bound candidate, we need to check if there is a node whose value is greater than current node value but is still smaller than the `target`, hence we let `lower = find_lower(root.right, target)` to see if there is a node that is closer to the lower bound.
+  - If there is one, return it.
+  - Otherwise, return current node.
+
+##### 思路2：non-recursive
+
+It uses the similar idea but in a non-recursive way.
+
+```python
+"""
+Definition of TreeNode:
+class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.left, self.right = None, None
+"""
+
+class Solution:
+    """
+    @param root: the given BST
+    @param target: the given target
+    @return: the value in the BST that is closest to the target
+    """
+    def closestValue(self, root, target):
+        # write your code here
+        return self.recursion(root, target)
+        #return self.non_recur(root, target)
+        
+    def non_recur(self, root, target):
+        upper, lower = root, root
+        while root:
+            if target > root.val:
+                lower = root
+                root = root.right
+            # use elif, instead of if. Since root might have
+            # been changed above
+            elif target < root.val: 
+                upper = root
+                root = root.left
+            else:
+                return root.val
+        if abs(upper.val - target) <= abs(lower.val - target):
+            return upper.val
+        return lower.val
+        
+    def recursion(self, root, target):
+        lower = self.find_lower(root, target)
+        upper = self.find_upper(root, target)
+        if not lower:
+            return upper.val
+        if not upper:
+            return lower.val
+        if abs(upper.val - target) <= abs(lower.val - target):
+            return upper.val
+        return lower.val
+    
+    def find_upper(self, root, target):
+        if not root:
+            return None
+        
+        if target >= root.val:
+            return self.find_upper(root.right, target)
+            
+        upper = self.find_upper(root.left, target)
+        
+        return upper if upper else root
+        
+    def find_lower(self, root, target):
+        if not root: 
+            return None
+        
+        if target <= root.val:
+            return self.find_lower(root.left, target)
+        
+        lower = self.find_lower(root.right, target)
+        return lower if lower else root
+```
+
+
+
+### 596. Minimum Subtree
+
+[题目描述](https://www.lintcode.com/problem/minimum-subtree/description)
+
+##### 思路：
+
+`node_min_sum` is the node with the minimum sum in the entire tree.
+
+`min_sum` is the minimum value of sub-tree sum in the entire tree, i.e. it's the sum of `node_min_sum`.
+
+`tree_sum` is the sum of current node.
+
+The general idea is to compare the `min_sum` values of left sub-tree, right sub-tree and the current node, return the tuple with the mininum sum value.
+
+```python
+"""
+Definition of TreeNode:
+class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.left, self.right = None, None
+"""
+
+class Solution:
+    """
+    @param root: the root of binary tree
+    @return: the root of the minimum subtree
+    """
+    def findSubtree(self, root):
+        # write your code here
+        node_min_sum, min_sum, tree_sum = self.find_min(root)
+        return node_min_sum
+        
+    def find_min(self, root):
+        if not root:
+            return root, sys.maxsize, 0
+            
+        left, left_min, left_sum = self.find_min(root.left)
+        right, right_min, right_sum = self.find_min(root.right)
+        
+        tree_sum = left_sum + right_sum + root.val
+        
+        if left_min == min(tree_sum, left_min, right_min):
+            return left, left_min, tree_sum # output tree_sum not left_sum
+        if right_min == min(tree_sum, left_min, right_min):
+            return right, right_min, tree_sum
+        return root, tree_sum, tree_sum
 ```
 
