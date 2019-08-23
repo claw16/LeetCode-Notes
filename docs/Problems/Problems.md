@@ -1279,3 +1279,134 @@ class Solution:
 
 ##### Solution:
 
+- Create a dummy tree node, whose right child is connected to the given root. The purpose of a dummy node here is to avoid a few lines of duplicate codes.
+- Put `dummy` into a stack, then start our loop:
+  - Pop a node from the stack, decrese the value of `k` by 1. If `k == 0`, then this node's value is the result.
+  - Check if there is a right child of the popped node. If yes, push all it's right child's left descendances into the stack. 
+
+```python
+class Solution:
+    """
+    @param root: the given BST
+    @param k: the given k
+    @return: the kth smallest element in BST
+    """
+    def kthSmallest(self, root, k):
+        dummy = TreeNode(-1)
+        dummy.right = root
+        stack = [dummy]
+        k += 1
+        
+        while 1:
+            node = stack.pop()
+            k -= 1
+            if k == 0:
+                return node.val
+            if node.right:
+                root = node.right
+                while root:
+                    stack.append(root)
+                    root = root.left
+```
+
+
+
+### 88. Lowest Common Ancestor of a Binary Tree
+
+[LintCode](https://www.lintcode.com/problem/lowest-common-ancestor-of-a-binary-tree/description), [LeetCode](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/)
+
+##### Solution:
+
+Find Lowest Common Ancestor in left and right sub-trees. 
+
+Cases:
+
+- If the root is equal to `A`, `A` if the LCA.
+- if `A` and `B` are in different sides, e.g. `A` is in left, `B` is in right, then the root is the LCA.
+- If `A` and `B` are in the same sub-tree, find LCA in that sub-tree.
+
+```python
+class Solution:
+    """
+    @param: root: The root of the binary search tree.
+    @param: A: A TreeNode in a Binary.
+    @param: B: A TreeNode in a Binary.
+    @return: Return the least common ancestor(LCA) of the two nodes.
+    """
+    def lowestCommonAncestor(self, root, A, B):
+        # write your code here
+        return self.helper(root, A, B)
+
+    def helper(self, root, A, B):
+        if not root:
+            return None
+            
+        if root == A or root == B:
+            return root
+        
+        left = self.helper(root.left, A, B)
+        right = self.helper(root.right, A, B)
+        
+        if left and right:
+            return root
+        if left:
+            return left
+        if right:
+            return right
+        return None
+```
+
+
+
+### 578. Lowest Common Ancestor III
+
+[LintCode](https://www.lintcode.com/problem/lowest-common-ancestor-iii/description)
+
+In addition to previous LCA problem, there is one more condition: A or B may not exist in given tree.
+
+##### Solution:
+
+Add two more variables to the return values: `has_a` and `has_b`.
+
+```python
+class Solution:
+    """
+    @param: root: The root of the binary tree.
+    @param: A: A TreeNode
+    @param: B: A TreeNode
+    @return: Return the LCA of the two nodes.
+    """
+    def lowestCommonAncestor3(self, root, A, B):
+        # write your code here
+        a, b, lca = self.helper(root, A, B)
+        if a and b:
+            return lca
+        return None
+        
+    def helper(self, root, A, B):
+        if not root:
+            return False, False, None
+            
+        # left_node is lca if a and b are both in left sub-tree
+        # if only a or b in left sub-tree, left_node is a or b
+        # if neither, left_node is None
+        left_has_a, left_has_b, left_node = self.helper(root.left, A, B)
+        right_has_a, right_has_b, right_node = self.helper(root.right, A, B)
+        
+        a = left_has_a or right_has_a or root == A
+        b = left_has_b or right_has_b or root == B
+        
+        if root == A or root == B:
+            return a, b, root
+            
+        if left_node and right_node:
+            return a, b, root
+            
+        if left_node:
+            return a, b, left_node
+        
+        if right_node:
+            return a, b, right_node
+        return a, b, None
+```
+
