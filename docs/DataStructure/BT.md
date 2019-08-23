@@ -39,3 +39,5 @@ def traverse(root, result):
     result.append(root.val) # 注意访问根节点放到了最后
 ```
 
+![](https://leetcode.com/problems/kth-smallest-element-in-a-bst/Figures/230/bfs_dfs.png)
+

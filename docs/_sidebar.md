@@ -1,10 +1,6 @@
-* [首页](/)
+* [首页](README)
 
-* [LeetCode Problems]()
-
-  * [Problems for later](Problems/forlater)
-
-* [LintCode Problems](Problems/LintCode)
+* [Problems](Problems/Problems)
 
 * [Data Structure](DataStructure/README)
   

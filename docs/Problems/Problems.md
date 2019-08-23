@@ -1125,3 +1125,157 @@ class Solution:
         return root, tree_sum, tree_sum
 ```
 
+
+
+### 480. Binary Tree Paths
+
+[题目描述](https://www.lintcode.com/problem/binary-tree-paths/description)
+
+##### 思路1：
+
+`path` is used to store current path, once the dfs traversal reaches a leaf, append this `path` to the `result` list, then pop an element from `path`.
+
+For example:
+
+```pseudocode
+   1
+ /   \
+2     3
+ \
+  5
+dfs(node 1, path = [1], result = []):
+	go to left child - node 2 (not leaf):
+		path.append(node 2) --> path = [1, 2]
+		dfs(node 2, path, result):
+            go to right child - node 5 (leaf):
+			path.append(node 5) --> path = [1, 2, 5]
+			dfs(node 5, path, result):
+				result.append(serialized path '1->2->5')
+			pop 5 from path --> path = [1, 2]
+		pop 2 from path --> path = [1]
+	go to right right - node 3 (leaf):
+		path.append(node 3) --> path = [1, 3]
+		dfs(node 3, path, result):
+			result.append(serialized path '1->3')
+		pop 3 from path --> path = [1]
+result = ['1->2->5', '1->3']
+```
+
+```python
+class Solution:
+    """
+    @param root: the root of the binary tree
+    @return: all root-to-leaf paths
+    """
+    def binaryTreePaths(self, root):
+        if not root:
+            return []
+            
+        ans = []
+        self.dfs(root, [str(root.val)], ans)
+        return ans
+        
+    def dfs(self, root, path, paths):
+        if not root.left and not root.right:
+            paths.append('->'.join(path))
+            
+        if root.left:
+            path.append(str(root.left.val))
+            self.dfs(root.left, path, paths)
+            path.pop()
+            
+        if root.right:
+            path.append(str(root.right.val))
+            self.dfs(root.right, path, paths)
+            path.pop()
+```
+
+
+
+##### 思路2：
+
+Divide and conquer version DFS.
+
+```python
+class Solution:
+    """
+    @param root: the root of the binary tree
+    @return: all root-to-leaf paths
+    """
+    def binaryTreePaths(self, root):
+        if not root:
+            return []
+            
+        if not root.left and not root.right:
+            return [str(root.val)] # use []
+            
+        paths = []
+        #if root.left:
+        for path in self.binaryTreePaths(root.left):
+            paths.append(str(root.val) + '->' + path)
+        
+        #if root.right:
+        for path in self.binaryTreePaths(root.right):
+            paths.append(str(root.val) + '->' + path)
+        
+        return paths
+```
+
+Walk through the example above.
+
+![](../img/q480_s2.jpg)
+
+
+
+### 453. Flatten Binary Tree to Linked List
+
+[题目描述](https://www.lintcode.com/problem/flatten-binary-tree-to-linked-list/description)
+
+##### 思路：
+
+divide: recursively flatten `root.left` and `root.right`, return the last node of `root.left` and last node of `root.right`. Let `root.right` be `left_last`'s right child, let `root`'s left child be its right child, finall reset `root.left` to `None`.
+
+```python
+"""
+Definition of TreeNode:
+class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.left, self.right = None, None
+"""
+
+class Solution:
+    """
+    @param root: a TreeNode, the root of the binary tree
+    @return: nothing
+    """
+    def flatten(self, root):
+        # write your code here
+        if not root:
+            return None
+        
+        left_last = self.flatten(root.left)
+        right_last = self.flatten(root.right)
+        
+        if left_last:
+            left_last.right = root.right
+            root.right = root.left
+            root.left = None
+        
+        if right_last:
+            return right_last
+            
+        if left_last:
+            return left_last
+            
+        return root
+```
+
+
+
+### 902. Kth Smallest Element in a BST
+
+[LintCode](https://www.lintcode.com/problem/kth-smallest-element-in-a-bst/description), [LeetCode](https://leetcode.com/problems/kth-smallest-element-in-a-bst/)
+
+##### Solution:
+
