@@ -434,10 +434,33 @@ class Solution:
 
 ##### 题解1：
 
-利用BST的性质：对BST进行in-order traversal，将得到一个sorted array。中序遍历，如果当前节点值大于上一个节点值，则True；否侧False。
+利用BST的性质：对BST进行in-order traversal，将得到一个sorted array。中序遍历，如果当前节点值大于上一个节点值，则True；否侧False。利用Dummy node，节省代码量。
 
-```
-
+```python
+class Solution:
+    """
+    @param root: The root of binary tree.
+    @return: True if the binary tree is BST, or false
+    """
+    def isValidBST(self, root):
+        # write your code here
+        dummy = TreeNode(-sys.maxsize)
+        dummy.right = root
+        stack = [dummy]
+        last = dummy
+        
+        while stack:
+            node = stack.pop()
+            if last != dummy and node.val <= last.val:
+                return False
+            #else:
+            last = node
+            if node.right:
+                root = node.right
+                while root:
+                    stack.append(root)
+                    root = root.left
+        return True
 ```
 
 
@@ -1408,5 +1431,81 @@ class Solution:
         if right_node:
             return a, b, right_node
         return a, b, None
+```
+
+
+
+### 495. Implement Stack
+
+[LintCode](https://www.lintcode.com/problem/implement-stack/description)
+
+```python
+class Stack:
+    """
+    @param: x: An integer
+    @return: nothing
+    """
+    def __init__(self):
+        self.data = []
+        self.size = 0
+    
+    def push(self, x):
+        if self.size == len(self.data) :
+            self.data.append(x)
+            self.size = len(self.data)
+        else:
+            self.data[self.size] = x
+            self.size += 1
+    """
+    @return: nothing
+    """
+    def pop(self):
+        if not self.isEmpty():
+            self.size -= 1
+            return self.data[self.size]
+        
+    """
+    @return: An integer
+    """
+    def top(self):
+        return self.data[self.size - 1]
+
+    """
+    @return: True if the stack is empty
+    """
+    def isEmpty(self):
+        return self.size == 0
+```
+
+```python
+class Stack:
+    """
+    @param: x: An integer
+    @return: nothing
+    """
+    
+    def __init__(self):
+        self.stack = []
+        
+    def push(self, x):
+        self.stack.append(x)
+
+    """
+    @return: nothing
+    """
+    def pop(self):
+        self.stack.pop()
+
+    """
+    @return: An integer
+    """
+    def top(self):
+        return self.stack[-1]
+
+    """
+    @return: True if the stack is empty
+    """
+    def isEmpty(self):
+        return len(self.stack) == 0
 ```
 

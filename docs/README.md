@@ -4,13 +4,9 @@
 
 ### 备忘：
 
-#### 优先级高：
+#### 20190824:
 
-* ~~看第一节课视频，学习LC200的解法。~~
-* ~~回顾一遍LC200 (longest)，433 (islands), 69 (traversal BT)，补全笔记~~
-
-#### 优先级低：
-
-* 字符串查找算法学习：KMP, Horspool's
+* Implement in / pre / post order traversal of BST using stack.
 * Validate BST分治法
+* 字符串查找算法学习：KMP, Horspool's
 
