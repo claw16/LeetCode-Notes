@@ -6,6 +6,7 @@
   
   * [Heap](DataStructure/Heap)
   * [Binary Tree](DataStructure/BT)
+  * [Hash Table](DataStructure/HashTable)
   
 * [Classic Algorithms](Algorithms/README)
 

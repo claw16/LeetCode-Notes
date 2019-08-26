@@ -1509,3 +1509,329 @@ class Stack:
         return len(self.stack) == 0
 ```
 
+
+
+### 494. Implement Stack by Two Queues
+
+[LintCode](https://www.lintcode.com/problem/implement-stack-by-two-queues/description), [LeetCode](https://leetcode.com/problems/implement-stack-using-queues/)
+
+[Approach 1](https://leetcode.com/problems/implement-stack-using-queues/solution/) here is a good illustration.
+
+```python
+from collections import deque
+class Stack:
+    """
+    @param: x: An integer
+    @return: nothing
+    """
+    def __init__(self):
+        self.q1, self.q2 = deque(), deque()
+    
+    def push(self, x):
+        # write your code here
+        self.q1.append(x)
+
+    """
+    @return: nothing
+    """
+    def pop(self):
+        # write your code here
+        self.switch()
+        self.q1, self.q2 = self.q2, self.q1
+
+    """
+    @return: An integer
+    """
+    def top(self):
+        # write your code here
+        self.switch()
+        self.q2.append(self.q1[0])
+        self.q1, self.q2 = self.q2, self.q1
+        return self.q2.popleft()
+        
+            
+    def switch(self):
+        while self.q2:
+            self.q2.popleft()
+        while len(self.q1) > 1:
+            self.q2.append(self.q1.popleft())
+        
+
+    """
+    @return: True if the stack is empty
+    """
+    def isEmpty(self):
+        # write your code here
+        return len(self.q1) == 0
+        
+```
+
+
+
+### 224. Implement Three Stacks by Single Array
+
+[LintCode](https://www.lintcode.com/problem/implement-three-stacks-by-single-array/description)
+
+##### Solution: 
+
+Use index 0, 1, 2 of the array to represent the top elements of three stacks. Use 3 linked list to store elements. The array stores the head node of each linked list.
+
+```python
+class Node:
+    def __init__(self, value):
+        self.val = value
+        self.next = None
+        #self.prev = None
+
+class ThreeStacks:
+    """
+    @param: size: An integer
+    """
+    def __init__(self, size):
+        # do intialization if necessary
+        self.data = [None] * 3
+
+    """
+    @param: stackNum: An integer
+    @param: value: An integer
+    @return: nothing
+    """
+    def push(self, stackNum, value):
+        # Push value into stackNum stack
+        top = Node(value)
+        top.next = self.data[stackNum]
+        #top.next.prev = top
+        self.data[stackNum] = top
+
+    """
+    @param: stackNum: An integer
+    @return: the top element
+    """
+    def pop(self, stackNum):
+        # Pop and return the top element from stackNum stack
+        popped = self.data[stackNum]
+        self.data[stackNum] = popped.next
+        return popped.val
+
+    """
+    @param: stackNum: An integer
+    @return: the top element
+    """
+    def peek(self, stackNum):
+        # Return the top element
+        return self.data[stackNum].val
+
+    """
+    @param: stackNum: An integer
+    @return: true if the stack is empty else false
+    """
+    def isEmpty(self, stackNum):
+        # write your code here
+        return self.data[stackNum] == None
+```
+
+
+
+### 40. Implement Queue by Two Stacks
+
+[LintCode](https://www.lintcode.com/problem/implement-queue-by-two-stacks/description), [LeetCode](https://leetcode.com/problems/implement-queue-using-stacks/)
+
+##### Solution:
+
+push: always push to stack `s1`.
+
+pop: if `s2` is not empty, it means that the elements in `s1` has been moved to `s2`, and the `first-in` element is now at the `last-out` position in `s2`. Pop `s2` directly. 
+
+top: same idea of pop, but return the last element in `s2`, instead of pop it.
+
+```python
+class MyQueue:
+    
+    def __init__(self):
+        # do intialization if necessary
+        self.s1, self.s2 = [], []
+
+    """
+    @param: element: An integer
+    @return: nothing
+    """
+    def push(self, element):
+        # write your code here
+        self.s1.append(element)
+
+    """
+    @return: An integer
+    """
+    def pop(self):
+        # write your code here
+        if not self.s2:
+            self.move_elements()
+        return self.s2.pop()
+        
+    """
+    @return: An integer
+    """
+    def top(self):
+        # write your code here
+        if not self.s2:
+            self.move_elements()
+        return self.s2[-1]
+
+    def move_elements(self):
+        while self.s1:
+            self.s2.append(self.s1.pop())
+            
+    def switch(self):
+        self.s1, self.s2 = self.s2, self.s1
+```
+
+
+
+### 955. Implement Queue by Circular Array
+
+[LintCode](https://www.lintcode.com/problem/implement-queue-by-circular-array/description), [LeetCode](https://leetcode.com/problems/design-circular-queue/)
+
+##### Solution:
+
+Use `head` and `tail` to indicate the queue's front and end positions, respectively.
+
+```python
+class MyCircularQueue:
+
+    def __init__(self, k: int):
+        """
+        Initialize your data structure here. Set the size of the queue to be k.
+        """
+        self.data = [0] * k
+        self.size = 0
+        self.head = 0
+        self.tail = 0
+        self.n = k
+        
+
+    def enQueue(self, value: int) -> bool:
+        """
+        Insert an element into the circular queue. Return true if the operation is successful.
+        """
+        if self.isFull(): 
+            return False
+        self.data[self.tail] = value
+        self.tail = (self.tail + 1) % self.n
+        self.size += 1
+        return True
+
+    def deQueue(self) -> bool:
+        """
+        Delete an element from the circular queue. Return true if the operation is successful.
+        """
+        if self.isEmpty():
+            return False
+        self.head = (self.head + 1) % self.n
+        self.size -= 1
+        return True
+
+    def Front(self) -> int:
+        """
+        Get the front item from the queue.
+        """
+        if self.isEmpty():
+            return -1
+        return self.data[self.head]
+        
+
+    def Rear(self) -> int:
+        """
+        Get the last item from the queue.
+        """
+        if self.isEmpty():
+            return -1
+        return self.data[self.tail - 1]
+        
+
+    def isEmpty(self) -> bool:
+        """
+        Checks whether the circular queue is empty or not.
+        """
+        return self.size == 0
+        
+
+    def isFull(self) -> bool:
+        """
+        Checks whether the circular queue is full or not.
+        """
+        return self.size == self.n
+        
+
+
+# Your MyCircularQueue object will be instantiated and called as such:
+# obj = MyCircularQueue(k)
+# param_1 = obj.enQueue(value)
+# param_2 = obj.deQueue()
+# param_3 = obj.Front()
+# param_4 = obj.Rear()
+# param_5 = obj.isEmpty()
+# param_6 = obj.isFull()
+```
+
+
+
+### 128. Hash Function
+
+[LintCode](https://www.lintcode.com/problem/hash-function/description)
+
+##### Solution:
+
+取模过程要使用同余定理：
+(a * b ) % MOD = ((a % MOD) * (b % MOD)) % MOD
+
+```python
+class Solution:
+    """
+    @param key: A string you should hash
+    @param HASH_SIZE: An integer
+    @return: An integer
+    """
+    def hashCode(self, key, HASH_SIZE):
+        ans = 0
+        for char in key:
+            ans = (ans*33 + ord(char)) % HASH_SIZE
+        return ans
+```
+
+
+
+### 130. Heapify
+
+[LintCode](https://www.lintcode.com/problem/heapify/description)
+
+##### Solution:
+
+- Perform `shiftdown` on all the father nodes (i.e. nodes with at least 1 child), from the last father node to the root.
+- `shiftdown`:
+  - Find the child (called `son`) with the minimum value between children.
+  - If `son` is already greater than `father`, the tree rooted at `father` is already a heap.
+  - If `son` is smaller than `father`, swap `son` and `father` and keep `shiftdown` until all nodes meet requirements.
+
+```python
+class Solution:
+    """
+    @param: A: Given an integer array
+    @return: nothing
+    """
+    def heapify(self, A):
+        # write your code here
+        for i in reversed(range(len(A) // 2 )):
+            self.shiftdown(A, i)
+            
+    def shiftdown(self, A, father):
+        while father * 2 + 1 < len(A):
+            son = father * 2 + 1
+            if son + 1 < len(A) and A[son] > A[son + 1]:
+                son += 1
+            if A[son] > A[father]:
+                break
+            
+            A[father], A[son] = A[son], A[father]
+            father = son
+```
+

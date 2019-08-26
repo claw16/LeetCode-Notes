@@ -4,7 +4,7 @@
 
 1. A heap is a special case of a complete binary tree.
 
-2. Every node in a heap is always greater (or smaller) than its descendants
+2. Every node in a heap is always greater (max-heap) than its descendants
 
 
 
@@ -16,7 +16,7 @@ Usually we use an array to represent a heap. A[0] is the root. The children of A
 
 ### Operations
 
-#### Insertion
+#### Insertion O(lg n)
 
 1. Insert new node to the end of the heap.
 
@@ -32,11 +32,17 @@ Usually we use an array to represent a heap. A[0] is the root. The children of A
 2. Delete the target node.
 3. Check the children and ancestor of the swapped node, if either of them does not meet the definition of a heap, recursively swap down or up until the heap becomes legal.
 
+Note: in step 3, the swapping direction must be always swapping up or always swapping down.
+
 #### Heap construction
 
 1. Initialize a binary tree by the given keys.
 2. Starting from the lowest non-leaf node, check the heap condition. If it does not meet the condition, keep swapping it with its largest child, until heap condition is met.
 3. Repeat step 2.
+
+### Min / Max Heap O(1)
+
+The minimum value of a min-heap is in its root.
 
 
 
