@@ -1835,3 +1835,195 @@ class Solution:
             father = son
 ```
 
+
+
+### 657. Insert Delete GetRandom O(1)
+
+[LintCode](https://www.lintcode.com/problem/insert-delete-getrandom-o1/description), [LeetCode](https://leetcode.com/problems/insert-delete-getrandom-o1/)
+
+##### Solution:
+
+- `val_to_index`: a dict stores value: index pairs.
+- `data`: an array stores values.
+- `insert`: append value to `data`, record its value and corresponding index in the array in the dict.
+- `remove`: get the index of the target value from dict, overwrite this index by the last element in the array. Update the index of the element in dict. Finally delete the record of the target value in dict.
+- `getRandom`: generate  a random number in the range of the array, return corresponding value.
+
+```python
+import random
+class RandomizedSet:
+    
+    def __init__(self):
+        # do intialization if necessary
+        self.val_to_index = {}
+        self.data = []
+
+    """
+    @param: val: a value to the set
+    @return: true if the set did not already contain the specified element or false
+    """
+    def insert(self, val):
+        # write your code here
+        if self.has_value(val):
+            return False
+        self.data.append(val)
+        self.val_to_index[val] = len(self.data) - 1
+        return True
+
+    """
+    @param: val: a value from the set
+    @return: true if the set contained the specified element or false
+    """
+    def remove(self, val):
+        # write your code here
+        if not self.has_value(val):
+            return False
+        index = self.val_to_index[val]
+        last = self.data[-1]
+        self.data[index] = last
+        self.val_to_index[last] = index
+        self.data.pop()
+        del self.val_to_index[val]
+        return True
+
+    """
+    @return: Get a random element from the set
+    """
+    def getRandom(self):
+        # write your code here
+        index = random.randint(0, len(self.data) - 1)
+        return self.data[index]
+        
+    def has_value(self, val):
+        return val in self.val_to_index
+
+
+# Your RandomizedSet object will be instantiated and called as such:
+# obj = RandomizedSet()
+# param = obj.insert(val)
+# param = obj.remove(val)
+# param = obj.getRandom()
+```
+
+
+
+### 657. Insert Delete GetRandom O(1)
+
+[LintCode](https://www.lintcode.com/problem/lru-cache/description), [LeetCode](https://leetcode.com/problems/lru-cache/)
+
+##### Solution:
+
+- Define a class called `Node`, in which `key` and `value` pair is stored.
+- Global variables:
+  - `dummyhead` points to the real head node of the linked list.
+  - `last_node` indicates the tail of the linked list.
+  - `capacity`.
+  - `size` is the current occupied capacity.
+  - `key_to_prev`: key and previous node.
+- `get(key)`. 
+  - If `key` is in cache, return its value, and also move the corresponding node to the end. **DON'T** forget to update current node and its next node info in `key_to_prev`.
+  - If it is not in cache, return -1.
+- `put(key, value)`.
+  - If `key` is in cache, update is value, and also move the corresponding node to the end. **DON'T** forget to update current node and its next node info in `key_to_prev`.
+  - if `key` is not in cache, create new node, append it to the end.
+    - If cache is full, remove the LRU.
+
+```python
+class Node():
+    def __init__(self, key = None, val = None, next = None):
+        self.key = key
+        self.val = val
+        self.next = next
+
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.size = 0
+        self.dummyhead = Node()
+        self.key_to_prev = {}
+        self.last_node = self.dummyhead
+        
+
+    def get(self, key: int) -> int:
+        # if key is not in cache
+        if key not in self.key_to_prev:
+            return -1
+        # if key is in cache
+        node = self.key_to_prev[key].next
+        # if node is the last node
+        if node == self.last_node:
+            return node.val
+        # if node is not the last node
+        self.move_to_end(node)
+        return node.val
+    
+    def put(self, key: int, value: int) -> None:
+        # if node is in cache
+        if key in self.key_to_prev:
+            node = self.key_to_prev[key].next
+            # if node is the last node
+            if node == self.last_node:
+                node.val = value
+                return
+            # if node is not the last node
+            self.move_to_end(node)
+            node.val = value
+            return
+        
+        # if node is not in cache
+        node = Node(key, value, None)
+        #   if cache is not full
+        if self.size < self.capacity:
+            self.push_back(node)
+            self.size += 1
+            return
+        #   if cache is full
+        LRU_node = self.dummyhead.next
+        self.remove_node(LRU_node)
+        # delete LRU_node info in dict and delete the node
+        del self.key_to_prev[LRU_node.key]
+        del LRU_node
+        self.push_back(node)
+        
+    def remove_node(self, node):
+        # get prev and next nodes
+        prev_node = self.key_to_prev[node.key]
+        next_node = node.next
+        prev_node.next = next_node
+        # update dict info for node and next_node
+        if node != self.last_node:
+            self.key_to_prev[next_node.key] = prev_node
+    
+    def move_to_end(self, node):
+        self.remove_node(node)
+        self.push_back(node)
+        
+    def push_back(self, node):
+        self.last_node.next = node
+        #node.next = None
+        self.key_to_prev[node.key] = self.last_node
+        self.last_node = node # update last_node
+
+# Your LRUCache object will be instantiated and called as such:
+# obj = LRUCache(capacity)
+# param_1 = obj.get(key)
+# obj.put(key,value)
+```
+
+Useful function to debug:
+
+```python
+    def print_node(self):
+        for key, node in self.key_to_prev.items():
+            print(key, ':', '(', node.key, node.val , ')')
+        
+        linkedlist = '\n dummy ->'
+        node = self.dummyhead.next
+        while  node:
+            linkedlist += '(' + str(node.key) + ', ' + str(node.val) + ')' + ' -> '
+            node = node.next
+        print(linkedlist)
+        print('last_node:', '(', self.last_node.key, self.last_node.val , ')')
+```
+

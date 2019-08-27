@@ -10,3 +10,6 @@
 * Validate BST分治法
 * 字符串查找算法学习：KMP, Horspool's
 
+#### 20190826:
+
+- Further optimize LRU cache problem code.
