@@ -546,6 +546,149 @@ class Solution:
 
 
 
+### 607. Two Sum III - Data structure design
+
+[LintCode](https://www.lintcode.com/problem/two-sum-iii-data-structure-design/description)
+
+##### Solution I:
+
+- `add() O(1)`: simply append to the end of an array.
+- `find() O(nlogn)`: sort array and use 2 pointers.
+
+```python
+class TwoSum:
+    """
+    @param number: An integer
+    @return: nothing
+    """
+    def __init__(self):
+        self.arr = []
+    
+    def add(self, number):
+        # write your code here
+        self.arr.append(number)
+    """
+    @param value: An integer
+    @return: Find if there exists any pair of numbers which sum is equal to the value.
+    """
+    def find(self, value):
+        # write your code here
+        if len(self.arr) < 2:
+            return False
+            
+        start, end = 0, len(self.arr) - 1
+        self.arr.sort()
+        
+        while start + 1 < end:
+            if self.arr[start] + self.arr[end] == value:
+                return True
+            if self.arr[start] + self.arr[end] < value:
+                start += 1
+            if self.arr[start] + self.arr[end] > value:
+                end -= 1
+        if self.arr[start] + self.arr[end] == value:
+            return True
+        return False
+```
+
+##### Solution II:
+
+- `add() O(1)`: add to a dict, added number is the key, and its appearance is the corresponding value.
+- `find() O(n)`: traverse the dict, if `target - current_number` is also in the dict; or it appears more than once in the dict, return True.
+
+```python
+class TwoSum:
+    """
+    @param number: An integer
+    @return: nothing
+    """
+    def __init__(self):
+        self.dict = {}
+    
+    def add(self, number):
+        # write your code here
+        if number in self.dict:
+            self.dict[number] += 1
+        else:
+            self.dict[number] = 1
+            
+    """
+    @param value: An integer
+    @return: Find if there exists any pair of numbers which sum is equal to the value.
+    """
+    def find(self, value):
+        # write your code here
+        for num in self.dict:
+            if value - num in self.dict and (value - num != num or self.dict[num] > 1):
+                return True
+        return False
+```
+
+
+
+### 607. Two Sum III - Data structure design
+
+[LintCode](https://www.lintcode.com/problem/move-zeroes/description)
+
+##### Solution:
+
+```python
+class Solution:
+    """
+    @param nums: an integer array
+    @return: nothing
+    """
+    def moveZeroes(self, nums):
+        # write your code here
+        slow = 0
+        for i in range(len(nums)):
+            if nums[i] != 0:
+                if nums[slow] != nums[i]:
+                    nums[slow] = nums[i]
+                slow += 1
+        
+        for j in range(slow, len(nums)):
+            if nums[j] != 0:
+                nums[j] = 0
+```
+
+
+
+### 464. Sort Integers II (quicksort)
+
+[LintCode](https://www.lintcode.com/problem/sort-integers-ii/description)
+
+```python
+class Solution:
+    """
+    @param A: an integer array
+    @return: nothing
+    """
+    def sortIntegers2(self, A):
+        # write your code here
+        start, end = 0, len(A) - 1
+        self.quicksort(A, start, end)
+        
+    def quicksort(self, A, start, end):
+        if start >= end:
+            return
+        left, right = start, end
+        pivot = A[(left + right) // 2]
+        while left <= right:
+            while A[left] < pivot:
+                left += 1
+            while A[right] > pivot:
+                right -= 1
+            if left <= right:
+                A[left], A[right] = A[right], A[left]
+                left += 1
+                right -= 1
+        self.quicksort(A, start, right)
+        self.quicksort(A, left, end)
+```
+
+
+
 
 
 ### 585. 山脉序列中的最大值
@@ -1432,6 +1575,52 @@ class Solution:
             return a, b, right_node
         return a, b, None
 ```
+
+
+
+### 86. Binary Search Tree Iterator
+
+[LintCode](https://www.lintcode.com/problem/binary-search-tree-iterator/description), [LeetCode](https://leetcode.com/problems/binary-search-tree-iterator/)
+
+##### Solution:
+
+Silimar to [902. Kth Smallest Element in a BST](https://www.lintcode.com/problem/kth-smallest-element-in-a-bst/description).
+
+```python
+class BSTIterator:
+    """
+    @param: root: The root of binary tree.
+    """
+    def __init__(self, root):
+        # do intialization if necessary
+        
+        self.dummy = TreeNode(None)
+        self.dummy.right = root
+        self.stack = [self.dummy]
+        self.next()
+
+    """
+    @return: True if there has next node, or false
+    """
+    def hasNext(self, ):
+        # write your code here
+        return bool(self.stack)
+
+    """
+    @return: return next node
+    """
+    def next(self, ):
+        # write your code here
+        node = self.stack.pop()
+        if node.right:
+            root = node.right
+            while root:
+                self.stack.append(root)
+                root = root.left
+        return node
+```
+
+
 
 
 

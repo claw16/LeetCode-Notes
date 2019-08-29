@@ -1,8 +1,8 @@
 # Python Tricks
 
-### String
+## String
 
-#### join()
+### join()
 
 将序列中的元素以指定的字符连接生成一个新的字符串。
 
@@ -24,7 +24,7 @@ a-b-c
 
 
 
-#### isalnum()
+### isalnum()
 
 检测字符串是否由字母和数字组成。如果 string 至少有一个字符并且所有字符都是字母或数字则返回 True,否则返回 False。
 
@@ -45,4 +45,26 @@ amanaplanacanalpanama
 ```
 
 解释：如果`char`通过`isalnum()`检测结果是字符，则用空字符连接；否则，跳过当前的`char`。上面的方法可以简单的去处字符串中所有的非数字和字母的字符，并且将所有字符转换为小写。
+
+
+
+## Simpler Writing ways
+
+### bool()
+
+Convert a given variable to a boolean value.
+
+For example
+
+```python
+stack = []
+if stack:
+	return True
+```
+
+Can be simplified as:
+
+```python
+return bool(stack)
+```
 
