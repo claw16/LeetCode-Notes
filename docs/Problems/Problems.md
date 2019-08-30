@@ -689,6 +689,201 @@ class Solution:
 
 
 
+### 143. Sort Colors II
+
+[LintCode](https://www.lintcode.com/problem/sort-colors-ii/description)
+
+##### Solution:
+
+The idea is almost the same with quicksort, pay extra attention to the `start` and `end` intervals and `while` conditions.
+
+```python
+class Solution:
+    """
+    @param colors: A list of integer
+    @param k: An integer
+    @return: nothing
+    """
+    def sortColors2(self, colors, k):
+        # write your code here
+        start, end = 0, len(colors) - 1
+        self.quicksort(colors, start, end, 1, k)
+        
+    def quicksort(self, colors, start, end, color_from, color_to):
+        if start == end or color_from == color_to:
+            return
+        left, right = start, end
+        color = (color_from + color_to) // 2
+        while left <= right:
+            while colors[left] <= color:
+                left += 1
+            while colors[right] > color:
+                right -= 1
+            if left <= right:
+                colors[left], colors[right] = colors[right], colors[left]
+                left += 1
+                right -= 1
+        self.quicksort(colors, start, right, color_from, color)
+        self.quicksort(colors, left, end, color + 1, color_to)
+```
+
+
+
+### 57. 3Sum
+
+[LintCode](https://www.lintcode.com/problem/3sum/description)
+
+##### Solution:
+
+Assume a candidate solution is `[a, b, c]`, we have `a + b + c = 0`, or `-a = b + c`. Then this question becomes a TwoSum question whose target is `-a`.
+
+```python
+class Solution:
+    """
+    @param numbers: Give an array numbers of n integer
+    @return: Find all unique triplets in the array which gives the sum of zero.
+    """
+    def threeSum(self, numbers):
+        # write your code here
+        numbers.sort()
+        ans = []
+        for i in range(len(numbers) - 2):
+            # ignore duplicate of a
+            if i and numbers[i] == numbers[i - 1]:
+                continue
+            # a must be negative
+            if numbers[i] > 0:
+                continue
+            self.two_sum(numbers, i + 1, len(numbers) - 1, ans)
+        return ans
+            
+    def two_sum(self, numbers, start, end, ans):
+        target = - numbers[start - 1]
+        while start < end:
+            if numbers[start] + numbers[end] == target:
+                ans.append([-target, numbers[start], numbers[end]])
+                start += 1
+                end -= 1
+                # ignore duplicates of b and c
+                while start < end and numbers[start] == numbers[start - 1]:
+                    start += 1
+                while start < end and numbers[end] == numbers[end + 1]:
+                    end -= 1
+            elif numbers[start] + numbers[end] > target:
+                end -= 1
+            else:
+                start += 1
+```
+
+
+
+### 5. Kth Largest Element
+
+[LintCode](https://www.lintcode.com/problem/kth-largest-element/description)
+
+##### Solution:
+
+An important principle of partition in quicksort: after 1 round of partition, the pivot is located at its final position of the array.
+
+Based on this principle, every call of partition, we check if the position of the pivot is the position we want. For example, if we want 3rd smallest element, and if pivot index is 2, then pivot is the solution.
+
+```python
+class Solution:
+    """
+    @param n: An integer
+    @param nums: An array
+    @return: the Kth largest element
+    """
+    def kthLargestElement(self, n, nums):
+        return self.partition(nums, 0, len(nums) - 1, len(nums) - n)
+        
+    def partition(self, nums, start, end, n):
+        if start == end:
+            return nums[n]
+        left, right = start, end
+        pivot = nums[(left + right) // 2]
+        while left <= right:
+            while nums[left] < pivot and left <= right:
+                left += 1
+            while nums[right] > pivot and left  <= right:
+                right -= 1
+            if left <= right:
+                nums[left], nums[right] = nums[right], nums[left]
+                left += 1
+                right -= 1
+        if left <= n:
+            return self.partition(nums, left, end, n)
+        if right >= n:
+            return self.partition(nums, start, right, n)
+        return nums[n]
+```
+
+
+
+
+
+### 31. Partition Array
+
+[LintCode](https://www.lintcode.com/problem/partition-array/description)
+
+##### Solution:
+
+To find the solution, there is no need to sort the array, only partition once the array is good.
+
+```python
+class Solution:
+    """
+    @param nums: The integer array you should partition
+    @param k: As description
+    @return: The index after partition
+    """
+    def partitionArray(self, nums, k):
+        start, end = 0, len(nums) - 1
+        while start <= end:
+            while start <= end and nums[start] < k:
+                start += 1
+            while start <= end and nums[end] >= k:
+                end -= 1
+            if start <= end:
+                nums[start], nums[end] = nums[end], nums[start]
+                start += 1
+                end -= 1
+        return start
+```
+
+
+
+### 608. Two Sum II - Input array is sorted
+
+[LintCode](https://www.lintcode.com/problem/two-sum-ii-input-array-is-sorted/description)
+
+##### Solution:
+
+`start` and `end` go from the left and right side of the array. If their sum is equal to `target`, we found the solution. If sum is smaller than `target`, keep `end` still and move `start` to the right. If sum is greater, move `end` to the left.
+
+```python
+class Solution:
+    """
+    @param nums: an array of Integer
+    @param target: target = nums[index1] + nums[index2]
+    @return: [index1 + 1, index2 + 1] (index1 < index2)
+    """
+    def twoSum(self, nums, target):
+        # write your code here
+        start, end = 0, len(nums) - 1
+        while start + 1 < end:
+            if nums[start] + nums[end] == target:
+                return [start + 1, end + 1]
+            if nums[start] + nums[end] > target:
+                end -= 1
+            if nums[start] + nums[end] < target:
+                start += 1
+        if nums[start] + nums[end] == target:
+            return [start + 1, end + 1]
+```
+
+
+
 
 
 ### 585. 山脉序列中的最大值

@@ -14,7 +14,12 @@
 
 - Further optimize LRU cache problem code.
 
-20190828:
+#### 20190828:
 
 - Optional: complete [901. Closest Binary Search Tree Value II](https://www.lintcode.com/problem/closest-binary-search-tree-value-ii/description)
+
+#### 20190829:
+
+- Review codes of [Quicksort](https://www.lintcode.com/problem/sort-integers-ii/description) and [sort colors](https://www.lintcode.com/problem/sort-colors-ii/description), carefully go through examples to see why some conditions are different.
+- Important: Review Lomuto's and Hoare's partition.
 
