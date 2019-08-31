@@ -626,7 +626,7 @@ class TwoSum:
 
 
 
-### 607. Two Sum III - Data structure design
+### 539. Move Zeros
 
 [LintCode](https://www.lintcode.com/problem/move-zeroes/description)
 
@@ -2472,5 +2472,158 @@ class LRUCache:
             self.push_back(LinkedNode(key, value))  #如果key不存在，则存入新节点
             if len(self.key_to_prev) > self.capacity:		#如果缓存超出上限
                 self.pop_front()					#删除头部
+```
+
+
+
+### 680. Split String
+
+[LintCode](https://www.lintcode.com/problem/split-string/description)
+
+##### Solution:
+
+Use DFS, Each recursion delete 1 or 2 char(s).
+
+```python
+class Solution:
+    """
+    @param: : a string to be split
+    @return: all possible split string array
+    """
+
+    def splitString(self, s):
+        ans = []
+        self.dfs(s, [], ans)
+        return ans
+        
+    def dfs(self, s, path, ans):
+        if s == '':
+            ans.append(path[:]) # important: path[:] for deep copy
+            return
+        for i in range(2):
+            if i + 1 <= len(s):
+                path.append(s[:i + 1])
+                self.dfs(s[i + 1 :], path, ans)
+                path.pop()
+```
+
+
+
+### 425. Letter Combinations of a Phone Number
+
+[LintCode](https://www.lintcode.com/problem/letter-combinations-of-a-phone-number/description)
+
+##### Solution:
+
+`index` is used to traverse a number's corresponding letters. For example,
+
+```python
+for letter in KEYBOARD[digits[index]]:
+```
+
+Add this letter into current path, then go to the next recursion call, in which the one of the next digit's corresponding letters will be added to the path. Repeat this process until the program reaches the base condition that `index` is out of the range.
+
+```python
+KEYBOARD = {
+    '2': 'abc',
+    '3': 'def',
+    '4': 'ghi',
+    '5': 'jkl',
+    '6': 'mno',
+    '7': 'pqrs',
+    '8': 'tuv',
+    '9': 'wxyz',
+}
+
+class Solution:
+    """
+    @param digits: A digital string
+    @return: all posible letter combinations
+    """
+    def letterCombinations(self, digits):
+        if not digits:
+            return []
+        ans = []
+        self.dfs(digits, 0, '', ans)
+        return ans
+    
+    def dfs(self, digits, index, path, ans):
+        if index == len(digits):
+            ans.append(path[:])
+            return
+        
+        for letter in KEYBOARD[digits[index]]:
+            self.dfs(digits, index + 1, path + letter, ans)
+```
+
+
+
+### 153. Combination Sum II
+
+[LintCode](https://www.lintcode.com/problem/combination-sum-ii/description), [LeetCode](https://leetcode.com/problems/combination-sum-ii/)
+
+##### Solution:
+
+This solution [post](https://leetcode-cn.com/problems/combination-sum-ii/solution/hui-su-suan-fa-jian-zhi-python-dai-ma-java-dai-m-3/) provides an excellent explanation.
+
+```python
+class Solution:
+    """
+    @param num: Given the candidate numbers
+    @param target: Given the target number
+    @return: All the combinations that sum to target
+    """
+    def combinationSum2(self, num, target):
+        if not num:
+            return []
+        ans = []
+        num.sort()
+        self.dfs(num, target, [], ans, 0, 0)
+        return ans
+        
+    def dfs(self, num, target, path, ans, cumulated, index):
+        if cumulated == target:
+            ans.append(path[:])
+            return
+        for i in range(index, len(num)):
+            if cumulated > target:
+                break
+            if i > index and num[i] == num[i - 1]:
+                continue
+            path.append(num[i])
+            self.dfs(num, target, path, ans, cumulated + num[i], i + 1)
+            path.pop()
+```
+
+
+
+### 135. Combination Sum
+
+[LintCode](https://www.lintcode.com/problem/combination-sum/description), [LeetCode](https://leetcode.com/problems/combination-sum)
+
+##### Solution:
+
+This solution [post](https://leetcode-cn.com/problems/combination-sum/solution/hui-su-suan-fa-jian-zhi-python-dai-ma-java-dai-m-2/) provides an excellent explanation.
+
+```python
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        if not candidates:
+            return []
+        ans = []
+        candidates.sort()
+        self.dfs(candidates, target, [], ans, 0, 0)
+        return ans
+        
+    def dfs(self, candidates, target, path, ans, cumulated, start):
+        if cumulated == target:
+            ans.append(path[:])
+            return
+        for i in range(start, len(candidates)):
+            if cumulated > target:
+                break
+            path.append(candidates[i])
+            self.dfs(candidates, target, path, ans, cumulated + candidates[i], i)
+            path.pop()
 ```
 
