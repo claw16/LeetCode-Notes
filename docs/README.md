@@ -23,3 +23,7 @@
 - Review codes of [Quicksort](https://www.lintcode.com/problem/sort-integers-ii/description) and [sort colors](https://www.lintcode.com/problem/sort-colors-ii/description), carefully go through examples to see why some conditions are different.
 - Important: Review Lomuto's and Hoare's partition.
 
+#### 20190831:
+
+- DP, LC669, 114, 116, maximum product subarray
+
