@@ -2,6 +2,8 @@
 
 * [Problems](Problems/Problems)
 
+  * [Dynamic Programming](Problems/DP)
+
 * [Data Structure](DataStructure/README)
   
   * [Heap](DataStructure/Heap)

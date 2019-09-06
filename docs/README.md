@@ -27,3 +27,15 @@
 
 - DP, LC669, 114, 116, maximum product subarray
 
+#### 20190901:
+
+- 76, 109
+
+#### 20190902:
+
+- Exam questions: 1712, 1600, 1592, 1162, 1012, 910
+
+#### 20190905::
+
+- Q 125.
+- Continue backpack 4 lectures.
