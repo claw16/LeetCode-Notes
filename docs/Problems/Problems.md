@@ -2291,6 +2291,258 @@ class RandomizedSet:
 
 
 
+### 209. First Unique Character in a String
+
+[LintCode](https://www.lintcode.com/problem/first-unique-character-in-a-string/description), [LeetCode](https://leetcode.com/problems/first-unique-character-in-a-string/)
+
+##### Solution O(N^2):
+
+Traverse the string twice. In the first traverse, use `dict` to record appearance of each character in the string. In the second traverse, return the first character whose appearance equals to 1.
+
+##### Solution O(N):
+
+Traverse the string only once. Treat the string as a datastream. Use a linked list to store characters that only appear once. If a character appears mote than once, delete it from the linked list. At the end, the first node in the linked list has the solution.
+
+- Define a class `Node`, in which character and its previous node are stored.
+- Define a class `Data_stream`, it reads in characters and construct the linked list. Global variables:
+  - `dummyhead` points to the real head node of the linked list.
+  - `tail` indicates the tail of the linked list.
+  - `char_prev` stores the unique character and its previous node.
+  - `duplicates` is a hash set, it stores the characters that have been read in.
+  - `index` is the index of each character in the given string.
+
+
+
+```python
+class Node:
+    def __init__(self, val = None, index = None, next_node = None):
+        self.val = val
+        self.index = index
+        self.next = next_node
+
+class Data_stream:
+    def __init__(self):
+        self.dummyhead = Node()
+        self.tail = self.dummyhead
+        self.char_prev = {}
+        self.duplicates = set()
+        self.index = -1
+        
+    def readin(self, ch):
+        self.index += 1
+        if ch in self.duplicates:
+            if ch in self.char_prev:
+                self.delete(ch)
+        else:
+            self.duplicates.add(ch)
+            node = Node(ch, self.index)
+            self.tail.next = node
+            self.char_prev[ch] = self.tail
+            self.tail = node
+            
+    def delete(self, ch):
+        prev = self.char_prev[ch]
+        node = prev.next
+        next_node = node.next
+        if not next_node: # node is tail
+            self.tail = prev
+        else: # node is not tail
+            self.char_prev[next_node.val] = prev
+        prev.next = next_node
+        node.next = None
+        del node
+        del self.char_prev[ch]
+        
+class Solution:
+    def firstUniqChar(self, s: str) -> int:
+        data = Data_stream()
+        for ch in s:
+            data.readin(ch)
+        return data.dummyhead.next.index if data.dummyhead.next else -1
+```
+
+
+
+### 685. First Unique Number in Data Stream
+
+[LintCode](https://www.lintcode.com/problem/first-unique-number-in-data-stream/description)
+
+##### Solution:
+
+Same idea as [209. First Unique Character in a String](https://www.lintcode.com/problem/first-unique-character-in-a-string/description).
+
+```python
+class Node:
+    def __init__(self, val = None, next_node = None):
+        self.val = val
+        self.next = next_node
+
+class Solution:
+    def __init__(self):
+        self.dummyhead = Node()
+        self.tail = self.dummyhead
+        self.num_prev = {}
+    
+    def firstUniqueNumber(self, nums, number):
+        found = False
+        for num in nums:
+            self.readin(num)
+            if num == number:
+                found = True
+                break
+        return self.dummyhead.next.val if self.dummyhead.next and found else -1
+        
+    def readin(self, num):
+        if num in self.num_prev: # not unique
+            if not self.num_prev[num]: # num appears > twice
+                return
+            self.delete(num)
+            return
+        # appears 1st time
+        node = Node(num)
+        self.tail.next = node
+        self.num_prev[num] = self.tail
+        self.tail = node
+        
+    def delete(self, num):
+        prev = self.num_prev[num]
+        node = prev.next
+        next_node = node.next
+        if next_node: # node is not tail
+            self.num_prev[next_node.val] = prev
+        else: # node is tail
+            self.tail = prev
+        prev.next = next_node
+        node.next = None
+        self.num_prev[num] = None
+        del node
+```
+
+
+
+### 612. K Closest Points
+
+[LintCode](https://www.lintcode.com/problem/k-closest-points/description)
+
+##### Solution:
+
+- Calculate distances.
+- Push the tuple (distance, x, y) into a heap.
+- Pop the first K tuples, the corresponding x and y values will be the solution
+
+```python
+"""
+Definition for a point.
+class Point:
+    def __init__(self, a=0, b=0):
+        self.x = a
+        self.y = b
+"""
+import heapq
+class Solution:
+    """
+    @param points: a list of points
+    @param origin: a point
+    @param k: An integer
+    @return: the k closest points
+    """
+    def kClosest(self, points, origin, k):
+        # write your code here
+        heap = []
+        for point in points:
+            dist = self.get_dist(point, origin)
+            heapq.heappush(heap, (dist, point.x, point.y))
+        ans = []
+        for _ in range(k):
+            _, x, y = heapq.heappop(heap)
+            ans.append([x, y])
+        return ans
+        
+    def get_dist(self, point, origin):
+        return ((point.x - origin.x) ** 2 + (point.y - origin.y) ** 2) ** (0.5)
+```
+
+
+
+### 544. Top k Largest Numbers
+
+[LintCode](https://www.lintcode.com/problem/top-k-largest-numbers/description)
+
+##### Solution:
+
+Use min-heap. Push numbers into the heap until the heap has k numbers. For the remaining numbers, compare them with the heap top (smallest number), if the number is greater than heap top, pop heap and push number; otherwise the number is of course not one of the top k largest numbers.
+
+```python
+import heapq
+class Solution:
+    """
+    @param nums: an integer array
+    @param k: An integer
+    @return: the top k largest numbers in array
+    """
+    def topk(self, nums, k):
+        # write your code here
+        heap = []
+        ans = []
+        for num in nums:
+            if len(heap) == k:
+                heapq.heappushpop(heap, num)
+            else:
+                heapq.heappush(heap, num)
+        while heap:
+            ans.append(heapq.heappop(heap))
+        ans.reverse()
+        return ans
+```
+
+
+
+### 104. Merge K Sorted Lists
+
+[LintCode](https://www.lintcode.com/problem/merge-k-sorted-lists/description)
+
+##### Solution:
+
+- Push all nodes into a min-heap.
+- Reconstruct all nodes into a single linked list ordered by their values.
+- Note: need to overwrite the comparison function of class `ListNode`, making a `ListNode` comparable by the heap.
+
+```python
+"""
+Definition of ListNode
+class ListNode(object):
+
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+"""
+import heapq
+ListNode.__lt__ = lambda x, y: (x.val < y.val)
+class Solution:
+    """
+    @param lists: a list of ListNode
+    @return: The head of one sorted list.
+    """
+    def mergeKLists(self, lists):
+        # write your code here
+        heap = []
+        for node in lists:
+            while node:
+                heapq.heappush(heap, node)
+                node = node.next
+        dummyhead = ListNode(None)
+        tail = dummyhead
+        while heap:
+            node = heapq.heappop(heap)
+            tail.next = node
+            tail = node
+        return dummyhead.next
+```
+
+
+
+
+
 ### 134. LRU Cache
 
 [LintCode](https://www.lintcode.com/problem/lru-cache/description), [LeetCode](https://leetcode.com/problems/lru-cache/)
@@ -2398,17 +2650,16 @@ class LRUCache:
 Useful function to debug:
 
 ```python
-    def print_node(self):
-        for key, node in self.key_to_prev.items():
-            print(key, ':', '(', node.key, node.val , ')')
-        
-        linkedlist = '\n dummy ->'
-        node = self.dummyhead.next
-        while  node:
-            linkedlist += '(' + str(node.key) + ', ' + str(node.val) + ')' + ' -> '
-            node = node.next
-        print(linkedlist)
-        print('last_node:', '(', self.last_node.key, self.last_node.val , ')')
+def print_node(self):
+    for key, node in self.key_to_prev.items():
+        print(key, ':', '(', node.key, node.val , ')')
+    linkedlist = '\n dummy ->'
+    node = self.dummyhead.next
+    while  node:
+        linkedlist += '(' + str(node.key) + ', ' + str(node.val) + ')' + ' -> '
+        node = node.next
+    print(linkedlist)
+    print('last_node:', '(', self.last_node.key, self.last_node.val , ')')
 ```
 
 Solution 九章算法：

@@ -39,3 +39,13 @@
 
 - Q 125.
 - Continue backpack 4 lectures.
+
+#### 20190907:
+
+- 18, 17, 15
+
+#### 20190908:
+
+- 829, 121
+- [104. Merge K Sorted Lists](https://www.lintcode.com/problem/merge-k-sorted-lists/description), use merge sort to solve the problem.
+

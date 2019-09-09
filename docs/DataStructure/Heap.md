@@ -49,3 +49,22 @@ The minimum value of a min-heap is in its root.
 ### Python Doc: heaqp
 
 Explanation of this module can be found [here](https://docs.python.org/3/library/heapq.html).
+
+
+
+### Example 1:
+
+Take [612. K Closest Points](https://www.lintcode.com/problem/k-closest-points/description) as an example. The problem requires us to output K closest points in terms of distance to the origin point. If two or more points have the same distance, sort by x-axis; and if they are the same in x-axis, sort by y-axis.
+
+We can use a heap store (distance, x, y), it sorts the tuple by distance, if distances are the same, it then sorts by x, and so forth.
+
+
+
+### Example 2:
+
+Overwrite the compare function of a node so that we can directly push ListNode into heapq.
+
+```python
+ListNode.__lt__ = lambda x, y: (x.val < y.val)
+```
+

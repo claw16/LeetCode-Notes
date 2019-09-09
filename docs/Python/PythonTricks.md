@@ -48,7 +48,7 @@ amanaplanacanalpanama
 
 
 
-## Simpler Writing ways
+## Simplified Coding
 
 ### bool()
 
@@ -67,4 +67,35 @@ Can be simplified as:
 ```python
 return bool(stack)
 ```
+
+
+
+### dict.get(key, default = None)
+
+Return value for `key`, if `key` is not in `dict`, return `default` value.
+
+For example:
+
+```python
+for char in string:
+	if char in dict:
+        dict[char] += 1
+    else:
+        dict[char] = 1
+```
+
+Can be simplified as:
+
+```python
+for char in string:
+    dict[char] = dict.get(char, 0) + 1
+```
+
+
+
+## List
+
+### Reverse a list
+
+This [post](https://dbader.org/blog/python-reverse-list) introduces 3 methods to reverse a list.
 
