@@ -49,3 +49,14 @@
 - 829, 121
 - [104. Merge K Sorted Lists](https://www.lintcode.com/problem/merge-k-sorted-lists/description), use merge sort to solve the problem.
 
+#### 20190909:
+
+- ugly number ii - heap and DP
+
+#### 20190923:
+
+- 115,
+
+#### 20191001:
+
+- 512

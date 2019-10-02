@@ -48,6 +48,22 @@ amanaplanacanalpanama
 
 
 
+### String to Char Array: list()
+
+For example:
+
+```
+Input : Word
+Output : ['W', 'o', 'r', 'd']
+```
+
+```python
+list('word')
+# ['w', 'o', 'r', 'd']
+```
+
+
+
 ## Simplified Coding
 
 ### bool()
