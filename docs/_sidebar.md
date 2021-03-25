@@ -2,6 +2,7 @@
 
 * [Problems](Problems/Problems)
 
+  * [BFS](Problems/BFS)
   * [Dynamic Programming](Problems/DP)
 
 * [Data Structure](DataStructure/README)
