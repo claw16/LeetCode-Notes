@@ -1,23 +1,23 @@
-# When do we use BFS
+**When do we use BFS**
 
-### Traversal in Graph
+#### Traversal in Graph
 
 - Level Order Traversal
 - Connected component
 - Topological Sorting
 
-### Shortest Path (SP) in Simple Graph
+#### Shortest Path (SP) in Simple Graph
 
 - Get the SP from point A to B = Level order traversal from A to B
 - Simple graph: each edge has same length
 
-### Iteration solution for all possible results *
+#### Iteration solution for all possible results *
 
 Details explanation in DFS.
 
 
 
-# Cheat info
+**Cheat info**
 
 Stack --> DFS
 
