@@ -61,3 +61,114 @@ class Solution:
         return ans
 ```
 
+
+
+### 297. Serialize and Deserialize Binary Tree
+
+[LeetCode](https://leetcode.com/problems/serialize-and-deserialize-binary-tree/), [LintCode](https://www.lintcode.com/problem/7/)
+
+**Solution**:
+
+```python
+from collections import deque
+class Codec:
+    def serialize(self, root):
+        if not root:
+            return ""
+        queue = deque([root])
+        ans = []
+        while queue:
+            for i in range(len(queue)):
+                node = queue.popleft()
+                if node is None:
+                    ans.append("#")
+                else:
+                    ans.append(node.val)
+                    if node.left:
+                        queue.append(node.left)
+                    else:
+                        queue.append(None)
+                    if node.right:
+                        queue.append(node.right)
+                    else:
+                        queue.append(None)
+        return ans
+
+    def deserialize(self, data):
+        if not data:
+            return None
+        nodes = [TreeNode(i) if i is not "#" else None for i in data]
+        node_idx = -1
+        for i, node in enumerate(nodes):
+            if node:
+                node_idx += 1
+            else:
+                continue
+            if nodes[node_idx*2+1]:
+                node.left = nodes[node_idx*2+1]
+            if nodes[node_idx*2+2] is not "#":
+                node.right = nodes[node_idx*2+2]
+        return nodes[0]
+```
+
+
+
+### 107. Binary Tree Level Order Traversal II
+
+[LeetCode](https://leetcode.com/problems/binary-tree-level-order-traversal-ii/)
+
+**Solution**: DFS, append each level nodes to the start of the result, i.e. use a `deque` and append nodes from left.
+
+```python
+class Solution:
+    def levelOrderBottom(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+        queue = deque([root])
+        ans = deque([])
+        while queue:
+            level = []
+            for i in range(len(queue)):
+                node = queue.popleft()
+                level.append(node.val)
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            ans.appendleft(level)
+        return ans
+```
+
+
+
+### 103. Binary Tree Zigzag Level Order Traversal
+
+[LeetCode](https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/)
+
+**Solution**: In addition to Problem 102, we introduce a indicator `is_left_right` initiated as `True`, while it is true, we append nodes to `level` from left, otherwise we append nodes to `level` from right.
+
+```python
+class Solution:
+    def zigzagLevelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+        queue = deque([root])
+        ans = []
+        is_left_right = True
+        while queue:
+            level = deque([])
+            for _ in range(len(queue)):
+                node = queue.popleft()
+                if is_left_right:
+                    level.append(node.val)
+                else:
+                    level.appendleft(node.val)
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            ans.append(level)
+            is_left_right = not is_left_right
+        return ans
+```
+
