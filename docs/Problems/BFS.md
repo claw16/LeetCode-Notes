@@ -6,6 +6,8 @@
 - Connected component
 - Topological Sorting
 
+A **graph** is described by G = <E, V>, i.e. a graph is consist of a set of edges and vertices.
+
 #### Shortest Path (SP) in Simple Graph
 
 - Get the SP from point A to B = Level order traversal from A to B
@@ -170,5 +172,59 @@ class Solution:
             ans.append(level)
             is_left_right = not is_left_right
         return ans
+```
+
+
+
+
+
+### 137. Clone Graph
+
+[LintCode](https://www.lintcode.com/problem/clone-graph/description)
+
+```python
+"""
+Definition for a undirected graph node
+class UndirectedGraphNode:
+    def __init__(self, x):
+        self.label = x
+        self.neighbors = []
+"""
+
+class Solution:
+    """
+    @param: node: A undirected graph node
+    @return: A undirected graph node
+    """
+    def cloneGraph(self, node):
+        if not node:
+            return node
+        
+        head = node
+        nodes = set([node])
+        queue = collections.deque([node])
+        
+        # bfs - get all nodes from node
+        while queue:
+            node = queue.popleft()
+            for neighbor in node.neighbors:
+                if neighbor not in nodes:
+                    queue.append(neighbor)
+                    nodes.add(neighbor)
+        
+        # node - new node dict 
+        node_newnode = {}
+        
+        # create new nodes based on label values
+        for node in nodes:
+            node_newnode[node] = UndirectedGraphNode(node.label)
+            
+        # feed in new neighbors to new nodes
+        for node in nodes:
+            new_node = node_newnode[node]
+            for neighbor in node.neighbors:
+                new_node.neighbors.append(node_newnode[neighbor])
+                
+        return node_newnode[head]
 ```
 

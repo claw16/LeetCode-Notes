@@ -130,58 +130,6 @@ class Solution:
 
 
 
-### 137. 克隆图
-
-[题目描述](https://www.lintcode.com/problem/clone-graph/description)
-
-```python
-"""
-Definition for a undirected graph node
-class UndirectedGraphNode:
-    def __init__(self, x):
-        self.label = x
-        self.neighbors = []
-"""
-
-class Solution:
-    """
-    @param: node: A undirected graph node
-    @return: A undirected graph node
-    """
-    def cloneGraph(self, node):
-        if not node:
-            return node
-        
-        head = node
-        nodes = set([node])
-        queue = collections.deque([node])
-        
-        # bfs - get all nodes from node
-        while queue:
-            node = queue.popleft()
-            for neighbor in node.neighbors:
-                if neighbor not in nodes:
-                    queue.append(neighbor)
-                    nodes.add(neighbor)
-        
-        # node - new node dict 
-        node_newnode = {}
-        
-        # create new nodes based on label values
-        for node in nodes:
-            node_newnode[node] = UndirectedGraphNode(node.label)
-            
-        # feed in new neighbors to new nodes
-        for node in nodes:
-            new_node = node_newnode[node]
-            for neighbor in node.neighbors:
-                new_node.neighbors.append(node_newnode[neighbor])
-                
-        return node_newnode[head]
-```
-
-
-
 ### 127. 拓扑排序
 
 [题目描述](https://www.lintcode.com/problem/topological-sorting/description)
